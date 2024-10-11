@@ -1,5 +1,5 @@
 import tkinter as tk
-from file_explorer import open_explorer, get_saved_path, prompt_for_path
+from file_explorer import open_explorer, comprobar_gifs_en_carpeta, prompt_for_gif_url_and_download
 from PIL import Image, ImageTk
 
 class AnimatedGIF:
@@ -29,7 +29,6 @@ class AnimatedGIF:
             self.label.destroy()  # Destruir el label anterior si existe
         
         self.label = tk.Label(self.ventana)  # Crear un nuevo label para el GIF
-        # Esto sirve para que no aparezcan uno abajo de otro 
         self.label.pack(pady=10)
         
         self.update_frame()
@@ -57,10 +56,9 @@ ventana = tk.Tk()
 ventana.title("PROYECTO GIF")
 ventana.geometry("400x400")
 
-# Verificar si es la primera vez que se ejecuta la aplicación
-saved_path = get_saved_path()
-if saved_path is None:
-    prompt_for_path()
+# Verificar si existen GIFs en la carpeta "GIF" del escritorio
+if not comprobar_gifs_en_carpeta():
+    prompt_for_gif_url_and_download()
 
 # Botón para abrir el explorador de archivos y mostrar el GIF animado
 boton_abrir = tk.Button(ventana, text="Abrir y Mostrar GIF Animado", command=seleccionar_y_mostrar_gif)
