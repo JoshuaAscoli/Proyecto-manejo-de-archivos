@@ -1,5 +1,5 @@
 import tkinter as tk
-from file_explorer import open_explorer, comprobar_gifs_en_carpeta, prompt_for_gif_url_and_download
+from file_explorer import open_explorer, comprobar_gifs_en_carpeta, prompt_for_gif_url_and_download, crear_carpeta_en_gif
 from PIL import Image, ImageTk
 import os
 import time
@@ -115,15 +115,19 @@ if not comprobar_gifs_en_carpeta():
 
 # Botón para abrir el explorador de archivos y mostrar el GIF animado
 boton_abrir = tk.Button(ventana, text="Abrir y Mostrar GIF Animado", command=seleccionar_y_mostrar_gif)
-boton_abrir.pack(pady=20)
+boton_abrir.pack(pady=1)
 
 # Botón para mostrar la información del GIF seleccionado
 boton_info = tk.Button(ventana, text="Ver información de GIF", command=mostrar_info_gif)
-boton_info.pack(pady=15)
+boton_info.pack(pady=1)
+
+# Botón para crear una nueva carpeta dentro de la carpeta GIF
+boton_crear_carpeta = tk.Button(ventana, text="Crear nueva carpeta en GIF", command=crear_carpeta_en_gif)
+boton_crear_carpeta.pack(pady=1)
 
 # Botón para cerrar la ventana
 boton_cerrar = tk.Button(ventana, text="Cerrar", command=ventana.quit)
-boton_cerrar.pack(pady=10)
+boton_cerrar.pack(pady=1)
 
 # Iniciar el bucle principal de la ventana
 ventana.mainloop()

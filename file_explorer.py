@@ -40,7 +40,7 @@ def prompt_for_gif_url_and_download():
     """Solicitar al usuario el enlace del GIF y descargarlo en la carpeta GIF."""
     gif_folder = get_gif_folder_path()
     if gif_folder:
-        url = simpledialog.askstring("Ingresar URL", "Por favor, ingresa el enlace del archivo GIF:")
+        url = simpledialog.askstring("Ingresar URL", "Por favor, ingresa el enlace del primer archivo GIF:")
         if url:
             # Asumimos que el nombre del GIF es el último segmento del URL
             gif_name = os.path.basename(url)
@@ -65,3 +65,16 @@ def open_explorer():
         
         return file_rute
     return None
+
+def crear_carpeta_en_gif():
+    """Crear una nueva carpeta dentro de la carpeta GIF en el escritorio."""
+    gif_folder = get_gif_folder_path()
+    if gif_folder:
+        nueva_carpeta = simpledialog.askstring("Nombre de la carpeta", "Introduce el nombre de la nueva carpeta:")
+        if nueva_carpeta:
+            nueva_ruta = os.path.join(gif_folder, nueva_carpeta)
+            try:
+                os.makedirs(nueva_ruta)
+                messagebox.showinfo("Carpeta creada", f"La carpeta '{nueva_carpeta}' ha sido creada.")
+            except Exception as e:
+                messagebox.showerror("Error al crear la carpeta", f"No se pudo crear la carpeta:")
