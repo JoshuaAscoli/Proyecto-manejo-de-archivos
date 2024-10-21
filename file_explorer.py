@@ -3,8 +3,6 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, simpledialog
 import requests
 
-CONFIG_FILE = 'config.txt'
-
 def get_gif_folder_path():
     """Obtener la ruta de la carpeta GIF en el escritorio."""
     desktop_path = os.path.join(os.path.expanduser("~"), "Desktop", "GIF")
@@ -42,7 +40,6 @@ def prompt_for_gif_url_and_download():
     if gif_folder:
         url = simpledialog.askstring("Ingresar URL", "Por favor, ingresa el enlace del primer archivo GIF:")
         if url:
-            # Asumimos que el nombre del GIF es el último segmento del URL
             gif_name = os.path.basename(url)
             save_path = os.path.join(gif_folder, gif_name)
             descargar_gif(url, save_path)
@@ -53,17 +50,13 @@ def open_explorer():
     
     if gif_folder:
         file_rute = filedialog.askopenfilename(
-            initialdir=gif_folder,  # Restrict the dialog to the GIF folder
+            initialdir=gif_folder,
             title="Seleccionar archivo",
             filetypes=[("Archivos GIF", "*.gif"), ("Todos los archivos", "*.*")]
         )
         
         if file_rute:
-            print(f"Archivo seleccionado: {file_rute}")
-        else:
-            print("No se seleccionó ningún archivo.")
-        
-        return file_rute
+            return file_rute
     return None
 
 def crear_carpeta_en_gif():
@@ -77,4 +70,4 @@ def crear_carpeta_en_gif():
                 os.makedirs(nueva_ruta)
                 messagebox.showinfo("Carpeta creada", f"La carpeta '{nueva_carpeta}' ha sido creada.")
             except Exception as e:
-                messagebox.showerror("Error al crear la carpeta", f"No se pudo crear la carpeta:")
+                messagebox.showerror("Error al crear la carpeta", f"No se pudo crear la carpeta: {e}")
