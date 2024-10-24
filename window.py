@@ -20,8 +20,9 @@ def descargar_gif(url):
         messagebox.showinfo("Descarga Completa", "El GIF ha sido descargado y guardado.")
         return save_path
     except Exception as e:
-        messagebox.showerror("Error de descarga", f"No se pudo descargar el archivo: {e}")
+        messagebox.showerror("Error de descarga", f"No se pudo descargar el archivo. Intenta con otro enlace: {e}")
         return None
+
 
 def get_gif_folder_path():
     """Obtener la ruta de la carpeta GIF en el escritorio."""
@@ -81,6 +82,34 @@ def extraer_info_completa_gif(ruta_gif):
     text_info.delete(1.0, tk.END)  # Eliminar el contenido anterior
     text_info.insert(tk.END, info)  # Insertar la nueva información
 
+    # Mostrar el botón para guardar información
+    btn_guardar_info.pack(pady=5)
+
+def guardar_info_en_txt(info):
+    """Guardar la información extraída del GIF en un archivo de texto, agregando al inicio."""
+    gif_folder = get_gif_folder_path()
+    if gif_folder:
+        txt_file_path = os.path.join(gif_folder, "info_gifs.txt")
+        try:
+            # Leer el contenido existente del archivo
+            if os.path.exists(txt_file_path):
+                with open(txt_file_path, 'r') as txt_file:
+                    existing_content = txt_file.read()
+            else:
+                existing_content = ""  # Si el archivo no existe, inicializar como cadena vacía
+            
+            # Agregar la nueva información al inicio
+            new_content = info + "\n" + "-" * 40 + "\n" + existing_content
+            
+            # Escribir todo el contenido de vuelta en el archivo
+            with open(txt_file_path, 'w') as txt_file:  # 'w' para sobrescribir
+                txt_file.write(new_content)
+
+            messagebox.showinfo("Guardado", "La información ha sido guardada en 'info_gifs.txt'.")
+        except Exception as e:
+            messagebox.showerror("Error", f"No se pudo guardar la información en el archivo: {e}")
+
+
 def agregar_carpeta():
     """Crear una nueva carpeta dentro de la carpeta GIF."""
     folder_name = entry_folder_name.get()
@@ -115,47 +144,63 @@ def seleccionar_gif_y_extraer():
     if ruta_gif:
         extraer_info_completa_gif(ruta_gif)
 
+def editar_info_gifs():
+    """Abrir el archivo de texto para editar la información de los GIFs."""
+    gif_folder = get_gif_folder_path()
+    if gif_folder:
+        txt_file_path = os.path.join(gif_folder, "info_gifs.txt")
+        if os.path.exists(txt_file_path):
+            os.startfile(txt_file_path)  # Abrir el archivo con el editor de texto predeterminado
+        else:
+            messagebox.showerror("Error", "El archivo 'info_gifs.txt' no existe.")
+
 ventana = tk.Tk()
 ventana.title("Extractor de datos de archivos GIF")
-ventana.geometry("800x500")  # Aumentar la altura para el Text widget
+ventana.geometry("800x525")  # Aumentar la altura para el Text widget
 
+color = '#6495ED'
 # Cambiar el color de fondo de la ventana
-ventana.configure(bg="#98FB98")  # Un verde suave (Light Green)
+ventana.configure(bg=color)
 
 # Label en negrita
-label_titulo = tk.Label(ventana, text="Extractor de datos de archivos GIF", font=("Arial", 16, "bold"), bg="#98FB98")
+label_titulo = tk.Label(ventana, text="Extractor de datos de archivos GIF", font=("Arial", 16, "bold"), bg=color)
 label_titulo.pack(pady=10)
 
 # Marco para la creación de carpetas
-frame_carpeta = tk.Frame(ventana, bg="#98FB98")
+frame_carpeta = tk.Frame(ventana, bg=color)
 frame_carpeta.pack(pady=10)
 
-tk.Label(frame_carpeta, text="Agregar Carpeta:", font=("Arial", 12), bg="#98FB98").pack(side=tk.LEFT)
+tk.Label(frame_carpeta, text="Agregar Carpeta:", font=("Arial", 11), bg=color).pack(side=tk.LEFT)
 entry_folder_name = tk.Entry(frame_carpeta, font=("Arial", 12))
 entry_folder_name.pack(side=tk.LEFT)
-tk.Button(frame_carpeta, text="Crear", command=agregar_carpeta, font=("Arial", 12)).pack(side=tk.LEFT)
+tk.Button(frame_carpeta, text="Crear", command=agregar_carpeta, font=("Arial", 11)).pack(side=tk.LEFT)
 
 # Marco para agregar GIFs
-frame_gif = tk.Frame(ventana, bg="#98FB98")
+frame_gif = tk.Frame(ventana, bg=color)
 frame_gif.pack(pady=10)
 
-tk.Label(frame_gif, text="Ingresar URL de nuevo GIF:", font=("Arial", 12), bg="#98FB98").pack(side=tk.LEFT)
+tk.Label(frame_gif, text="Ingresar URL de nuevo GIF:", font=("Arial", 11), bg=color).pack(side=tk.LEFT)
 entry_gif_url = tk.Entry(frame_gif, font=("Arial", 12))
 entry_gif_url.pack(side=tk.LEFT)
-tk.Button(frame_gif, text="Agregar", command=agregar_gif, font=("Arial", 12)).pack(side=tk.LEFT)
+tk.Button(frame_gif, text="Agregar", command=agregar_gif, font=("Arial", 11)).pack(side=tk.LEFT)
 
 # Botón para extraer información completa de un GIF
-tk.Button(ventana, text="Extraer Información de un GIF", command=seleccionar_gif_y_extraer, font=("Arial", 12)).pack(pady=5)
+tk.Button(ventana, text="Extraer Información de un GIF", command=seleccionar_gif_y_extraer, font=("Arial", 11)).pack(pady=5)
 
-# Text widget para mostrar la información del GIF
-text_info = tk.Text(ventana, height=10, width=50, font=("Arial", 14))
+# Botón para editar información de los GIFs
+tk.Button(ventana, text="Editar Información de un GIF", command=editar_info_gifs, font=("Arial", 11)).pack(pady=5)
+
+# Botón para guardar información
+btn_guardar_info = tk.Button(ventana, text="Guardar Información", command=lambda: guardar_info_en_txt(text_info.get(1.0, tk.END)), font=("Arial", 11))
+btn_guardar_info.pack(pady=5)
+btn_guardar_info.pack_forget()  # Esconder el botón al inicio
+
+# Text widget para mostrar la información extraída
+text_info = tk.Text(ventana, height=10, width=80, font=("Arial", 11))
 text_info.pack(pady=10)
 
-# Cambiar el color de fondo del Text widget
-text_info.configure(bg="#E0FFE0")  # Un verde muy claro (Light Green)
-
 # Botón para cerrar la ventana
-tk.Button(ventana, text="Cerrar", command=ventana.quit, font=("Arial", 17)).pack(pady=5)
+tk.Button(ventana, text="Cerrar", command=ventana.quit, font=("Arial", 11)).pack(pady=5)
 
 # Iniciar el programa
 gifs = comprobar_gifs_en_carpeta()
